@@ -146,7 +146,9 @@
   function notify(message) { toast.textContent = message; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.hidden = true; }, 3600); }
   function avatar(person, className = "admin-avatar") { return person.image ? `<img class="${className}" src="${esc(person.image)}" alt="${esc(person.name)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'${className}',textContent:'${esc(initials(person.name))}'}))">` : `<span class="${className}">${esc(initials(person.name))}</span>`; }
   function filteredPeople() {
-    return people.filter(person => Object.values(person).join(" ").toLowerCase().includes(adminSearch.toLowerCase()) && (!adminLocationFilter || person.location === adminLocationFilter) && (!adminDepartmentFilter || person.department === adminDepartmentFilter) && (!adminSourceFilter || (adminSourceFilter === "manual" ? person.source === "Manual" : person.source !== "Manual"))).sort((a,b) => a.location.localeCompare(b.location) || a.department.localeCompare(b.department) || a.name.localeCompare(b.name));
+    const departmentRank = value => { const index = departments.indexOf(value); return index < 0 ? 99 : index; };
+    const leadershipRank = person => /general manager|director|owner|president|vice president|\bvp\b/i.test(person.title) ? 0 : /manager|supervisor|foreman/i.test(person.title) ? 1 : 2;
+    return people.filter(person => Object.values(person).join(" ").toLowerCase().includes(adminSearch.toLowerCase()) && (!adminLocationFilter || person.location === adminLocationFilter) && (!adminDepartmentFilter || person.department === adminDepartmentFilter) && (!adminSourceFilter || (adminSourceFilter === "manual" ? person.source === "Manual" : person.source !== "Manual"))).sort((a,b) => locations.indexOf(a.location) - locations.indexOf(b.location) || departmentRank(a.department) - departmentRank(b.department) || leadershipRank(a) - leadershipRank(b) || a.name.localeCompare(b.name));
   }
   function currentPerson(list = people) { return list.find(person => keyFor(person) === selectedKey) || list[0] || null; }
   function detailRow(iconMarkup, label, value, href = "") { return `<div class="admin-detail-row">${iconMarkup}<b>${esc(label)}</b>${href && value ? `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(value)}</a>` : `<span>${esc(value || "—")}</span>`}</div>`; }
@@ -201,7 +203,7 @@
     if (activeView === "sync") renderSyncView();
     if (activeView === "settings") renderSettingsView();
   }
-  function openAdmin() { activeView = "people"; adminLocationFilter = ""; adminModal.hidden = false; document.body.classList.add("admin-open"); renderAdmin(); }
+  function openAdmin() { activeView = "people"; adminLocationFilter = "Howell"; selectedKey = ""; page = 1; adminModal.hidden = false; document.body.classList.add("admin-open"); renderAdmin(); }
   function closeAdmin() { adminModal.hidden = true; document.body.classList.remove("admin-open"); }
   function changeView(view) { if (view === "directory") { closeAdmin(); return; } activeView = view; renderAdmin(); }
   function openEmployeeForm(person) {
@@ -290,4 +292,5 @@
   adminSettingsView.addEventListener("click",event=>{const button=event.target.closest("[data-action]");if(button)handleAction(button.dataset.action)});
   document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(!employeeFormModal.hidden)closeEmployeeForm();else if(!adminModal.hidden)closeAdmin()}});
   render2();
+  if (location.hash === "#admin") setTimeout(openAdmin, 0);
 })();
