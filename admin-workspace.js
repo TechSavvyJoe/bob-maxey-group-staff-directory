@@ -1,6 +1,7 @@
 /* Bob Maxey Staff Operations — browser-local administration layer. */
 (() => {
   if (typeof people === "undefined" || typeof render2 === "undefined") return;
+  document.body.classList.add("dashboard-mode");
 
   const STORE_KEY = "bob-maxey-directory-admin-v1";
   const SETTINGS_KEY = "bob-maxey-directory-settings-v1";
@@ -133,7 +134,7 @@
   const employeeDelete = document.querySelector("#employeeDelete");
   const globalSearch = document.querySelector("#adminGlobalSearch");
   const toast = document.querySelector("#adminToast");
-  let activeView = "people";
+  let activeView = "directory";
   let adminSearch = "";
   let adminLocationFilter = "";
   let adminDepartmentFilter = "";
@@ -194,18 +195,18 @@
   }
   function renderAdmin() {
     if (adminModal.hidden) return;
-    adminPeopleView.hidden = activeView !== "people";
+    adminPeopleView.hidden = !["directory", "people"].includes(activeView);
     adminSyncView.hidden = activeView !== "sync";
     adminSettingsView.hidden = activeView !== "settings";
     document.querySelectorAll(".admin-tab").forEach(button => button.classList.toggle("active", button.dataset.adminView === activeView));
     document.querySelectorAll(".admin-location").forEach(button => button.classList.toggle("active", button.dataset.location === adminLocationFilter));
-    if (activeView === "people") renderPeopleView();
+    if (["directory", "people"].includes(activeView)) renderPeopleView();
     if (activeView === "sync") renderSyncView();
     if (activeView === "settings") renderSettingsView();
   }
-  function openAdmin() { activeView = "people"; adminLocationFilter = "Howell"; selectedKey = ""; page = 1; adminModal.hidden = false; document.body.classList.add("admin-open"); renderAdmin(); }
-  function closeAdmin() { adminModal.hidden = true; document.body.classList.remove("admin-open"); }
-  function changeView(view) { if (view === "directory") { closeAdmin(); return; } activeView = view; renderAdmin(); }
+  function openAdmin(view = "directory") { activeView = view; adminLocationFilter = "Howell"; selectedKey = ""; page = 1; adminModal.hidden = false; document.body.classList.add("admin-open"); renderAdmin(); }
+  function closeAdmin() { activeView = "directory"; renderAdmin(); }
+  function changeView(view) { activeView = view; renderAdmin(); }
   function openEmployeeForm(person) {
     employeeForm.reset();
     employeeForm.originalKey.value = person ? keyFor(person) : "";
@@ -249,7 +250,7 @@
     if(!file)return; const reader=new FileReader(); reader.onload=()=>{const rows=csvRows(String(reader.result||""));if(rows.length<2){notify("That CSV did not include usable rows.");return}const headers=rows[0],get=(row,names)=>{const index=mapHeader(headers,names);return index===null?"":row[index]||""};let changed=0,added=0,unmatched=0;rows.slice(1).forEach(row=>{const name=get(row,["name","fullname","contactname","employee","employeename"]),location=get(row,["location","site","store","dealership"]),extension=get(row,["extension","ext","number","phoneextension"]);if(!name)return;const candidate=people.find(person=>person.name.toLowerCase()===name.toLowerCase()&&(!location||person.location.toLowerCase().includes(location.toLowerCase())));if(extensionOnly){if(!candidate){unmatched+=1;return}candidate.extension=extension;candidate.source="CallRevu directory";candidate.updatedAt=nowLabel();changed+=1;return}const data=normalize({location:location||candidate?.location||"Howell",department:get(row,["department","team"])||candidate?.department||"Administration",name,title:get(row,["title","role","position"])||candidate?.title||"Team member",phone:get(row,["phone","phonenumber","directphone"])||candidate?.phone||"",email:get(row,["email","emailaddress"])||candidate?.email||"",extension:extension||candidate?.extension||"",salesAssignment:get(row,["salesassignment","salestrack","vehicletype"])||candidate?.salesAssignment||"",image:get(row,["photo","image","photourl"])||candidate?.image||"",source:"CSV import",updatedAt:nowLabel()});if(candidate){Object.assign(candidate,data);changed+=1}else{people.push(data);added+=1}});saveData();notify(extensionOnly?`Updated ${changed} extension records${unmatched?`; ${unmatched} unmatched`:""}.`:`Imported ${changed} updates and ${added} new staff records.`)};reader.readAsText(file);
   }
   function runReview(){const settings=getSettings();settings.lastSync=nowLabel();saveSettings(settings);renderAdmin();notify("Source review timestamp saved. Configure the secured connector for automatic refreshes.")}
-  function showPublicProfile(person){if(!person)return;activeLocation2=person.location;activeDepartment2=person.department;search2.value=person.name;render2();closeAdmin();setTimeout(()=>{const card=document.querySelector(`[data-person="${CSS.escape(personKey2(person))}"]`);if(card)card.click()},100)}
+  function showPublicProfile(person){if(!person)return;activeView="directory";selectedKey=keyFor(person);renderAdmin();notify(`${person.name}'s directory profile is selected.`)}
   function handleAction(action,key){
     if(action==="add")openEmployeeForm();
     if(action==="edit")openEmployeeForm(people.find(person=>keyFor(person)===key));
@@ -264,10 +265,10 @@
   const directoryUtility=document.querySelector(".directory-utility");
   if(directoryUtility)directoryUtility.insertAdjacentHTML("beforeend",`<button class="admin-launch" id="adminLaunch" type="button">${icons.users} Admin</button>`);
   document.querySelector("#adminLaunch")?.addEventListener("click",openAdmin);
-  document.querySelector("#adminClose").addEventListener("click",closeAdmin);
+  document.querySelector("#adminClose").addEventListener("click",()=>changeView("directory"));
   document.querySelector(".admin-tabs").addEventListener("click",event=>{const button=event.target.closest("[data-admin-view]");if(button)changeView(button.dataset.adminView)});
   document.querySelector(".admin-location-nav").addEventListener("click",event=>{const button=event.target.closest("[data-location]");if(!button)return;adminLocationFilter=adminLocationFilter===button.dataset.location?"":button.dataset.location;page=1;activeView="people";renderAdmin()});
-  globalSearch.addEventListener("input",event=>{adminSearch=event.target.value;page=1;if(activeView!=="people")activeView="people";renderAdmin()});
+  globalSearch.addEventListener("input",event=>{adminSearch=event.target.value;page=1;if(!["directory","people"].includes(activeView))activeView="directory";renderAdmin()});
   document.querySelector("#employeeFormClose").addEventListener("click",closeEmployeeForm);
   document.querySelector("#employeeFormCancel").addEventListener("click",closeEmployeeForm);
   employeeDelete.addEventListener("click",removeEmployee);
@@ -290,7 +291,7 @@
   adminSyncView.addEventListener("click",event=>{const button=event.target.closest("[data-action]");if(button)handleAction(button.dataset.action)});
   adminSettingsView.addEventListener("change",event=>{const settings=getSettings();if(event.target.id==="livePreview")settings.livePreview=event.target.checked;if(event.target.id==="sourceLabels")settings.sourceLabels=event.target.checked;saveSettings(settings);notify("Directory setting saved locally.")});
   adminSettingsView.addEventListener("click",event=>{const button=event.target.closest("[data-action]");if(button)handleAction(button.dataset.action)});
-  document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(!employeeFormModal.hidden)closeEmployeeForm();else if(!adminModal.hidden)closeAdmin()}});
+  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!employeeFormModal.hidden)closeEmployeeForm()});
   render2();
-  if (location.hash === "#admin") setTimeout(openAdmin, 0);
+  setTimeout(() => openAdmin(location.hash === "#admin" ? "people" : "directory"), 0);
 })();
