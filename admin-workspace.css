@@ -13,12 +13,12 @@ body.admin-open{overflow:hidden}.admin-modal,.admin-modal *{box-sizing:border-bo
 .admin-location[data-location="Ford Detroit"] img{width:46px!important}
 .admin-location[data-location="Lincoln"] img{width:40px!important;filter:brightness(0) invert(1)!important}
 .admin-toolbar input,.admin-toolbar select{min-height:42px;font-size:13px}
-.admin-table{font-size:13px}
-.admin-table th{padding:12px 11px;font-size:11px}
-.admin-table td{height:60px;padding:9px 11px;font-size:13px}
+.admin-table{font-size:14px}
+.admin-table th{padding:13px 11px;font-size:12px}
+.admin-table td{height:64px;padding:9px 11px;color:#254968;font-size:14px;font-weight:600}
 .admin-table th:nth-child(1){width:64px}.admin-table th:nth-child(2){width:166px}.admin-table th:nth-child(3){width:170px}.admin-table th:nth-child(4){width:116px}.admin-table th:nth-child(5){width:120px}.admin-table th:nth-child(6){width:136px}.admin-table th:nth-child(7){width:68px}.admin-table th:nth-child(8){width:44px}
-.admin-avatar{width:44px;height:44px;font-size:12px}
-.admin-name{font-size:14px}
+.admin-avatar{width:48px;height:48px;font-size:13px}
+.admin-name{font-size:15px;font-weight:850}
 .admin-pagination{font-size:12px}
 .admin-inspector-photo{width:104px;height:104px;flex-basis:104px;font-size:28px}
 .admin-inspector-name h3{font-size:21px}.admin-inspector-name p{font-size:14px}
@@ -26,4 +26,4 @@ body.admin-open{overflow:hidden}.admin-modal,.admin-modal *{box-sizing:border-bo
 .admin-detail-row{grid-template-columns:18px 98px 1fr;font-size:13px}
 .admin-button{font-size:13px}
 
-@media(max-width:880px){.admin-table th:nth-child(8),.admin-table td:nth-child(8){display:table-cell}.admin-table{font-size:13px}.admin-table td{height:58px}}
+@media(max-width:880px){.admin-table th:nth-child(8),.admin-table td:nth-child(8){display:table-cell}.admin-table{font-size:14px}.admin-table td{height:62px}}
