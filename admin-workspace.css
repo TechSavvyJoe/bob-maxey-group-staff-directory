@@ -7,3 +7,23 @@ body.admin-open{overflow:hidden}.admin-modal,.admin-modal *{box-sizing:border-bo
 @media(max-width:1180px){.admin-dialog{grid-template-columns:200px minmax(0,1fr)}.admin-brand{padding-left:22px}.admin-brand strong{font-size:28px}.admin-topbar{grid-template-columns:210px minmax(260px,1fr) auto}.admin-user-copy{display:none}.admin-body{grid-template-columns:minmax(560px,1fr) 320px}.admin-toolbar{grid-template-columns:minmax(220px,1fr) 130px 135px}.admin-toolbar select:nth-of-type(3),.admin-clear{display:none}.admin-table th:nth-child(3),.admin-table td:nth-child(3){display:none}}
 @media(max-width:880px){.admin-dialog{grid-template-columns:1fr}.admin-rail{display:none}.admin-topbar{grid-template-columns:1fr auto;padding:0 17px}.admin-app-title{display:none}.admin-global-search{grid-column:1}.admin-user{grid-column:2}.admin-tabs{padding:0 12px}.admin-tabs-note{display:none}.admin-commandbar{align-items:flex-start;padding:18px;flex-direction:column}.admin-actions{justify-content:flex-start}.admin-body{grid-template-columns:1fr}.admin-inspector{display:none}.admin-list-panel{border-right:0;padding:12px}.admin-toolbar{grid-template-columns:1fr 1fr}.admin-toolbar input{grid-column:1/-1}.admin-toolbar select:nth-of-type(3),.admin-clear{display:block}.admin-table th:nth-child(3),.admin-table td:nth-child(3),.admin-table th:nth-child(6),.admin-table td:nth-child(6),.admin-table th:nth-child(8),.admin-table td:nth-child(8){display:none}.admin-secondary-view{padding:20px}.settings-grid,.sync-config{grid-template-columns:1fr}}
 @media(max-width:600px){.admin-workspace{grid-template-rows:66px 48px 1fr}.admin-user .admin-bell,.admin-user-avatar,.admin-user-copy{display:none}.admin-tabs{overflow-x:auto}.admin-tab{padding:0 12px;white-space:nowrap}.admin-commandbar{padding:14px}.admin-page-title h2{font-size:23px}.admin-actions .admin-button:nth-last-child(-n+2){display:none}.admin-toolbar{grid-template-columns:1fr}.admin-toolbar input{grid-column:auto}.admin-toolbar select:nth-of-type(2),.admin-toolbar select:nth-of-type(3),.admin-clear{display:none}.admin-table th:nth-child(4),.admin-table td:nth-child(4),.admin-table th:nth-child(5),.admin-table td:nth-child(5),.admin-table th:nth-child(7),.admin-table td:nth-child(7){display:none}.admin-pagination{font-size:10px}.admin-page-size{display:none}.metric-strip{grid-template-columns:1fr}.sync-card{grid-template-columns:36px minmax(0,1fr)}.sync-state{grid-column:2;text-align:left}.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}.form-modal{padding:0}.form-dialog{max-height:100vh;border:0;border-radius:0}}
+
+/* Readability pass: keep the dashboard compact without shrinking employee information. */
+.admin-location img{width:44px!important;height:28px!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))!important}
+.admin-location[data-location="Ford Detroit"] img{width:46px!important}
+.admin-location[data-location="Lincoln"] img{width:40px!important;filter:brightness(0) invert(1)!important}
+.admin-toolbar input,.admin-toolbar select{min-height:42px;font-size:13px}
+.admin-table{font-size:13px}
+.admin-table th{padding:12px 11px;font-size:11px}
+.admin-table td{height:60px;padding:9px 11px;font-size:13px}
+.admin-table th:nth-child(1){width:64px}.admin-table th:nth-child(2){width:166px}.admin-table th:nth-child(3){width:170px}.admin-table th:nth-child(4){width:116px}.admin-table th:nth-child(5){width:120px}.admin-table th:nth-child(6){width:136px}.admin-table th:nth-child(7){width:68px}.admin-table th:nth-child(8){width:44px}
+.admin-avatar{width:44px;height:44px;font-size:12px}
+.admin-name{font-size:14px}
+.admin-pagination{font-size:12px}
+.admin-inspector-photo{width:104px;height:104px;flex-basis:104px;font-size:28px}
+.admin-inspector-name h3{font-size:21px}.admin-inspector-name p{font-size:14px}
+.admin-inspector-tabs span{font-size:12px}
+.admin-detail-row{grid-template-columns:18px 98px 1fr;font-size:13px}
+.admin-button{font-size:13px}
+
+@media(max-width:880px){.admin-table th:nth-child(8),.admin-table td:nth-child(8){display:table-cell}.admin-table{font-size:13px}.admin-table td{height:58px}}
